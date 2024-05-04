@@ -8,26 +8,33 @@ from helpers import (
     play_match_choose, 
     records
 )
+from seed import (seed_database)
 
 
 def main():
-    while True:
-        main_menu()
-        choice = input("-> ")
-        if choice == "0":
-            exit_program()
-        elif choice == "1":
-            team_menu()
-        elif choice == "2":
-            player_menu()
-        elif choice == "3":
-            play_match_random()
-        elif choice == "4":
-            play_match_choose()
-        elif choice == "5":
-            records()
-        else:
-            print("Invalid choice")
+    reset = input("Before we begin would you like to seed the database? Y/N: -> ")
+    if reset == "y" or reset == "Y":
+        seed_database()
+    elif reset == "n" or reset == "N":
+        while True:
+            main_menu()
+            choice = input("-> ")
+            if choice == "0":
+                exit_program()
+            elif choice == "1":
+                team_menu()
+            elif choice == "2":
+                player_menu()
+            elif choice == "3":
+                play_match_random()
+            elif choice == "4":
+                play_match_choose()
+            elif choice == "5":
+                records()
+            else:
+                print("Invalid choice")
+    else: 
+        print("Please type Y for (yes) ||or|| N for (no)")
 
 
 def main_menu():

@@ -1,10 +1,11 @@
 # lib/models/team.py
 from models.__init__ import CURSOR, CONN
+import random 
 
 class Team:
     all={}
 
-    def __init__(self, name, location, conference, points = 0, id=None):
+    def __init__(self, name, location, conference, points, id=None):
         self.id = id
         self.name = name
         self.location = location
@@ -51,14 +52,15 @@ class Team:
         return self._points
     @points.setter
     def points(self, points):
-        self._points = points
+        if type(points) is int:
+            self._points = points
         
 #==========================================ClassMethods===================================================   
      
     @classmethod
     def create_table(cls):
         sql = """
-            CREATE TABLE IF NOT EXISTS teams (id INTEGER PRIMARY KEY, name TEXT, location TEXT, conference, points INTEGER)
+            CREATE TABLE IF NOT EXISTS teams (id INTEGER PRIMARY KEY, name TEXT, location TEXT, conference TEXT, points INTEGER)
         """
         CURSOR.execute(sql)
         CONN.commit()
@@ -115,9 +117,15 @@ class Team:
 
     @classmethod
     def point_board(cls):
-        sql = """SELECT * FROM teams ORDER BY points ASC"""
+        sql = """SELECT * FROM teams ORDER BY points DESC"""
         teams = CURSOR.execute(sql).fetchall()
-        return [Team.instance_from_db(team) for team in teams]
+        return [cls.instance_from_db(team) for team in teams]
+    
+    @classmethod
+    def random_team(cls):
+        sql = """SELECT * FROM teams ORDER BY RANDOM() LIMIT 1"""
+        team = CURSOR.execute(sql).fetchone()
+        return Team.instance_from_db(team)
 
 #==========================================InstanceMethods===================================================   
 
@@ -145,4 +153,7 @@ class Team:
         sql = """SELECT * FROM players WHERE team_id = ?"""
         players = CURSOR.execute(sql, (self.id,)).fetchall()
         return [Player.instance_from_db(player) for player in players]
+    
+
+        
     

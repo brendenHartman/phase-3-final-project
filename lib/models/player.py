@@ -53,7 +53,7 @@ class Player:
         return self._team_id
     @team_id.setter
     def team_id(self, team_id):
-        if type(team_id) is int and Team.find_by_id(team_id):
+        if type(team_id) is int and isinstance(Team.find_by_id(team_id), Team):
             self._team_id = team_id
         else:
             raise ValueError(f"Team ID must be a Team ID that already exists")

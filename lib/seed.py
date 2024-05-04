@@ -21,9 +21,9 @@ def seed_database():
     #luis_s = Player.create()
     #jordi_a = Player.create()
 
-    xherdan_s = Player.create("Xherdan Shakiri", 10, 11, 1)
-    brian_g = Player.create("Brian Guttierez",11,12,1)
-    chris_b = Player.create("Chris Barnes",11,13,1)
+    xherdan_s = Player.create("Xherdan Shakiri", 10, 11, chicago.id)
+    brian_g = Player.create("Brian Guttierez",11,12,chicago.id)
+    chris_b = Player.create("Chris Barnes",11,13,chicago.id)
 
     #hugo_l = Player.create()
     #denis_b = Player.create()
