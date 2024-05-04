@@ -4,11 +4,12 @@ from models.__init__ import CURSOR, CONN
 class Team:
     all={}
 
-    def __init__(self, name, location, conference, id=None):
+    def __init__(self, name, location, conference, points = 0, id=None):
         self.id = id
         self.name = name
         self.location = location
         self.conference = conference
+        self.points = points
 
     def __repr__(self):
         return f"{self.name}, {self.location}, {self.conference} conference"
@@ -45,12 +46,19 @@ class Team:
         else:
             raise ValueError("Conference must be either west, or east")
         
+    @property
+    def points(self):
+        return self._points
+    @points.setter
+    def points(self, points):
+        self._points = points
+        
 #==========================================ClassMethods===================================================   
      
     @classmethod
     def create_table(cls):
         sql = """
-            CREATE TABLE IF NOT EXISTS teams (id INTEGER PRIMARY KEY, name TEXT, location TEXT)
+            CREATE TABLE IF NOT EXISTS teams (id INTEGER PRIMARY KEY, name TEXT, location TEXT, conference, points INTEGER)
         """
         CURSOR.execute(sql)
         CONN.commit()
@@ -62,8 +70,8 @@ class Team:
         CONN.commit()
     
     @classmethod
-    def create(cls, name, location, conference):
-        team = cls(name, location, conference)
+    def create(cls, name, location, conference, points):
+        team = cls(name, location, conference, points)
         team.save()
         return team
 
@@ -74,8 +82,9 @@ class Team:
             team.name = row[1]
             team.location = row[2]
             team.conference = row[3]
+            team.points = row[4]
         else:
-            team = cls(row[1],row[2],row[3])
+            team = cls(row[1],row[2],row[3],row[4])
             team.id = row[0]
             cls.all[team.id] = team
         return team
@@ -89,27 +98,39 @@ class Team:
     @classmethod
     def find_by_id(cls, id):
         sql = """SELECT * FROM teams WHERE id = ?"""
-        team = CURSOR.execute(sql, (id,))
+        team = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(team) if team else None
     
     @classmethod
     def find_by_name(cls, name):
         sql = """SELECT * FROM teams WHERE name = ?"""
-        team = CURSOR.execute(sql, (name,))
+        team = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(team) if team else None
+
+    @classmethod
+    def get_all_by_conference(cls, conference):
+        sql = """SELECT * FROM teams WHERE conference = ?"""
+        teams = CURSOR.execute(sql, (conference,)).fetchall()
+        return [cls.instance_from_db(team) for team in teams]
+
+    @classmethod
+    def point_board(cls):
+        sql = """SELECT * FROM teams ORDER BY points ASC"""
+        teams = CURSOR.execute(sql).fetchall()
+        return [Team.instance_from_db(team) for team in teams]
 
 #==========================================InstanceMethods===================================================   
 
     def save(self):
-        sql = """INSERT INTO teams (name, location, conference) VALUES (?,?,?)"""
-        CURSOR.execute(sql, (self.name, self.location, self.conference))
+        sql = """INSERT INTO teams (name, location, conference, points) VALUES (?,?,?,?)"""
+        CURSOR.execute(sql, (self.name, self.location, self.conference, self.points))
         CONN.commit()
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     def update(self):
-        sql = """UPDATE teams SET name = ?, location = ?, conference = ? WHERE id = ?"""
-        CURSOR.execute(sql, (self.name, self.location, self.conference, self.id))
+        sql = """UPDATE teams SET name = ?, location = ?, conference = ?, points = ? WHERE id = ?"""
+        CURSOR.execute(sql, (self.name, self.location, self.conference, self.points, self.id))
         CONN.commit()
 
     def delete(self):
@@ -118,4 +139,10 @@ class Team:
         CONN.commit()
         del type(self).all[self.id]
         self.id= None
+
+    def players(self):
+        from models.player import Player
+        sql = """SELECT * FROM players WHERE team_id = ?"""
+        players = CURSOR.execute(sql, (self.id,)).fetchall()
+        return [Player.instance_from_db(player) for player in players]
     

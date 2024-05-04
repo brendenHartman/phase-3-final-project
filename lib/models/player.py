@@ -103,13 +103,13 @@ class Player:
     @classmethod
     def find_by_id(cls, id):
         sql = """SELECT * FROM players WHERE id = ?"""
-        player = CURSOR.execute(sql, (id,))
+        player = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(player) if player else None
     
     @classmethod
     def find_by_name(cls, name):
         sql = """SELECT * FROM players WHERE name = ?"""
-        player = CURSOR.execute(sql, (name,))
+        player = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(player) if player else None
 
 #==========================================InstanceMethods===================================================   
