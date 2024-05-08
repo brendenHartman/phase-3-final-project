@@ -6,9 +6,12 @@ from helpers import (
     player_menu, 
     play_match_random, 
     play_match_choose, 
-    records
+    records,
 )
-from seed import (seed_database)
+from seed import (
+    seed_database,
+    clear_data
+)
 
 
 def main():
@@ -49,6 +52,7 @@ if __name__ == "__main__":
         seed_database()
         main()
     elif reset == "n" or reset == "N":
+        clear_data()
         main()
     else:
         print("Please type Y for (yes) ||or|| N for (no)")

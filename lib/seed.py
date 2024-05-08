@@ -1,6 +1,9 @@
 #1/usr/bin/env python3
 from models.team import Team
 from models.player import Player
+def clear_data():
+    Player.drop_table()
+    Team.drop_table()
 
 def seed_database():
     Player.drop_table()
