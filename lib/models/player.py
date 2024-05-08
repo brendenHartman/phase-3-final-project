@@ -14,7 +14,7 @@ class Player:
         self.team_id = team_id
 
     def __repr__(self):
-        return f"{self.name}, {self.position} Number: {self.number} on {Team.find_by_id(self.team_id).name}"
+        return f"{self.name}, number {self.number}, plays position {self.position}"
     
 #==========================================PropertyFuncs===================================================
 

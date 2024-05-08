@@ -1,6 +1,5 @@
 # lib/models/team.py
 from models.__init__ import CURSOR, CONN
-import random 
 
 class Team:
     all={}
@@ -153,6 +152,7 @@ class Team:
         sql = """SELECT * FROM players WHERE team_id = ?"""
         players = CURSOR.execute(sql, (self.id,)).fetchall()
         return [Player.instance_from_db(player) for player in players]
+        
     
 
         

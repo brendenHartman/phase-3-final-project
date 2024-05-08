@@ -12,10 +12,6 @@ from seed import (seed_database)
 
 
 def main():
-    reset = input("Before we begin would you like to seed the database? Y/N: -> ")
-    if reset == "y" or reset == "Y":
-        seed_database()
-    elif reset == "n" or reset == "N":
         while True:
             main_menu()
             choice = input("-> ")
@@ -33,11 +29,10 @@ def main():
                 records()
             else:
                 print("Invalid choice")
-    else: 
-        print("Please type Y for (yes) ||or|| N for (no)")
 
 
 def main_menu():
+    print("------------------------------------")
     print("Please select an option:")
     print("1. Enter The Teams Hub")
     print("2. Enter The Players Hub")
@@ -45,7 +40,15 @@ def main_menu():
     print("4. Play Match With Team")
     print("5. View Team Points")
     print("0. Exit Program")
+    print("------------------------------------")
 
 
 if __name__ == "__main__":
-    main()
+    reset = input("Before we begin would you like to seed the database? Y/N: -> ")
+    if reset == "y" or reset == "Y":
+        seed_database()
+        main()
+    elif reset == "n" or reset == "N":
+        main()
+    else:
+        print("Please type Y for (yes) ||or|| N for (no)")
