@@ -125,6 +125,22 @@ class Team:
         sql = """SELECT * FROM teams ORDER BY RANDOM() LIMIT 1"""
         team = CURSOR.execute(sql).fetchone()
         return Team.instance_from_db(team)
+    
+    @classmethod
+    def find_in_dict(cls, _id):
+        try: 
+            if 0 < int(_id) <= len(Team.all):
+                __id = int(_id)
+                team = list(Team.all.values())[__id - 1]
+                return team
+            else:
+                print("------------------------------------")
+                print("Invalid Team")
+                print("------------------------------------")
+        except Exception as exc:
+            print("------------------------------------")
+            print("Invalid Team")
+            print("------------------------------------")
 
 #==========================================InstanceMethods===================================================   
 
@@ -153,7 +169,3 @@ class Team:
         players = CURSOR.execute(sql, (self.id,)).fetchall()
         return [Player.instance_from_db(player) for player in players]
         
-    
-
-        
-    
